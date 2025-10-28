@@ -9,18 +9,36 @@ class DestinationCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Image.network(
-            destination.posterPath,
-            height: 200,
-            width: double.infinity,
-            fit: BoxFit.cover,
+          ClipRRect(
+            borderRadius: BorderRadiusGeometry.only(
+              topLeft: Radius.circular(8),
+              topRight: Radius.circular(8),
+            ),
+            child: Hero(
+              tag: destination.id,
+              child: Image.network(
+                destination.posterPath,
+                height: 200,
+                width: double.infinity,
+                fit: BoxFit.cover,
+              ),
+            ),
           ),
-          Text(
-            destination.title,
-            style: TextStyle(fontWeight: FontWeight.bold),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  destination.title,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(destination.overview, maxLines: 1,),
+              ],
+            ),
           ),
-          Text(destination.overview),
         ],
       ),
     );

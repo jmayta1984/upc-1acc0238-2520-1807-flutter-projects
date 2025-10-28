@@ -1,6 +1,7 @@
 import 'package:easy_travel/features/home/data/destination_service.dart';
 import 'package:easy_travel/features/home/domain/destination.dart';
 import 'package:easy_travel/features/home/presentation/destination_card.dart';
+import 'package:easy_travel/features/home/presentation/destination_detail_page.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
@@ -11,8 +12,16 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-
   List<Destination> _destinations = [];
+
+  final List<String> _categories = [
+    'All',
+    'Adventure',
+    'Beach',
+    'City',
+    'Cultural',
+  ];
+  String _selectedCategory = 'All';
 
   @override
   void initState() {
@@ -20,9 +29,9 @@ class _HomePageState extends State<HomePage> {
     super.initState();
   }
 
-
   Future<void> _loadData() async {
-    List<Destination> destinations = await DestinationService().getDestinations();
+    List<Destination> destinations = await DestinationService()
+        .getDestinations(_selectedCategory);
     setState(() {
       _destinations = destinations;
     });
@@ -30,12 +39,45 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: _destinations.length,
-      itemBuilder: (context, index)  {
-        final Destination destination = _destinations[index];
-        return DestinationCard(destination: destination);
-      },
+    return Column(
+      children: [
+        SizedBox(
+          height: 48,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) => FilterChip(
+              selected: _selectedCategory == _categories[index],
+              label: Text(_categories[index]),
+              onSelected: (value) {
+                setState(() {
+                  _selectedCategory = _categories[index];
+                  _loadData();
+                });
+              },
+            ),
+            separatorBuilder: (context, index) => SizedBox(width: 8),
+            itemCount: _categories.length,
+          ),
+        ),
+        Expanded(
+          child: ListView.builder(
+            itemCount: _destinations.length,
+            itemBuilder: (context, index) {
+              final Destination destination = _destinations[index];
+              return GestureDetector(
+                onTap: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        DestinationDetailPage(destination: destination),
+                  ),
+                ),
+                child: DestinationCard(destination: destination),
+              );
+            },
+          ),
+        ),
+      ],
     );
   }
 }
