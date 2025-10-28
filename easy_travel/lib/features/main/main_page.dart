@@ -1,3 +1,4 @@
+import 'package:easy_travel/features/home/presentation/home_page.dart';
 import 'package:flutter/material.dart';
 
 class MainPage extends StatefulWidget {
@@ -8,10 +9,11 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int selectedIndex  = 0;
+  int selectedIndex = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      body: HomePage(),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: selectedIndex,
         onTap: (value) {
@@ -19,16 +21,20 @@ class _MainPageState extends State<MainPage> {
             selectedIndex = value;
           });
         },
-        items: [
+        items: const [
           BottomNavigationBarItem(
-            icon: const Icon(Icons.home),
-            label: "Home"),
+            icon: Icon(Icons.home_outlined),
+            activeIcon: Icon(Icons.home),
+            label: "Home",
+          ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.favorite),
+            icon: Icon(Icons.favorite_outline),
+            activeIcon: Icon(Icons.favorite),
             label: "Favorites",
           ),
           BottomNavigationBarItem(
-            icon: const Icon(Icons.person),
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
             label: "Profile",
           ),
         ],
