@@ -1,8 +1,11 @@
-import 'package:easy_travel/features/home/data/destination_service.dart';
 import 'package:easy_travel/features/home/domain/destination.dart';
+import 'package:easy_travel/features/home/presentation/blocs/destinations_bloc.dart';
+import 'package:easy_travel/features/home/presentation/blocs/destinations_event.dart';
+import 'package:easy_travel/features/home/presentation/blocs/destinations_state.dart';
 import 'package:easy_travel/features/home/presentation/destination_card.dart';
 import 'package:easy_travel/features/home/presentation/destination_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -12,7 +15,6 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Destination> _destinations = [];
 
   final List<String> _categories = [
     'All',
@@ -25,17 +27,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    _loadData();
     super.initState();
+    context.read<DestinationsBloc>().add(GetDestinationsEvent(category: _selectedCategory));
   }
 
-  Future<void> _loadData() async {
-    List<Destination> destinations = await DestinationService()
-        .getDestinations(_selectedCategory);
-    setState(() {
-      _destinations = destinations;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -51,8 +46,9 @@ class _HomePageState extends State<HomePage> {
               onSelected: (value) {
                 setState(() {
                   _selectedCategory = _categories[index];
-                  _loadData();
+
                 });
+                context.read<DestinationsBloc>().add(GetDestinationsEvent(category: _selectedCategory));
               },
             ),
             separatorBuilder: (context, index) => SizedBox(width: 8),
@@ -60,20 +56,32 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         Expanded(
-          child: ListView.builder(
-            itemCount: _destinations.length,
-            itemBuilder: (context, index) {
-              final Destination destination = _destinations[index];
-              return GestureDetector(
-                onTap: () => Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        DestinationDetailPage(destination: destination),
-                  ),
-                ),
-                child: DestinationCard(destination: destination),
-              );
+          child: BlocBuilder<DestinationsBloc, DestinationsState>(
+            builder: (context, state) {
+              if (state is DestinationsLoadingState) {
+                return Center(child: CircularProgressIndicator());
+              } else if (state is DestinationsSuccessState) {
+                return ListView.builder(
+                  itemCount: state.destinations.length,
+                  itemBuilder: (context, index) {
+                    final Destination destination = state.destinations[index];
+                    return GestureDetector(
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              DestinationDetailPage(destination: destination),
+                        ),
+                      ),
+                      child: DestinationCard(destination: destination),
+                    );
+                  },
+                );
+              } else if (state is DestinationsFailureState) {
+                return Center(child: Text(state.message),);
+              } else {
+                return Center();
+              }
             },
           ),
         ),

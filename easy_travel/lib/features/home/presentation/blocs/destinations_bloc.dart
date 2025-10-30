@@ -9,9 +9,14 @@ class DestinationsBloc extends Bloc<DestinationsEvent, DestinationsState> {
     on<GetDestinationsEvent>((event, emit) async {
       emit(DestinationsLoadingState());
 
-      List<Destination> destinations = await DestinationService().getDestinations(event.category);
+      try {
+        List<Destination> destinations = await DestinationService()
+            .getDestinations(event.category);
 
-      emit(DestinationsSuccessState(destinations: destinations));
+        emit(DestinationsSuccessState(destinations: destinations));
+      } catch (e) {
+        emit(DestinationsFailureState(message: e.toString()));
+      }
     });
   }
 }
