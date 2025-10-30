@@ -19,7 +19,7 @@ class MainApp extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           DestinationsBloc(service: DestinationService())
-            ..add(GetDestinationsEvent(category: 'All')),
+            ..add(GetAllDestinationsEvent()),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: theme.light(),
