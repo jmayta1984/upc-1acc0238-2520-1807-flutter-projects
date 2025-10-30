@@ -1,6 +1,8 @@
 import 'package:easy_travel/core/theme.dart';
 import 'package:easy_travel/features/auth/login_page.dart';
+import 'package:easy_travel/features/home/data/destination_service.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destinations_bloc.dart';
+import 'package:easy_travel/features/home/presentation/blocs/destinations_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -15,14 +17,14 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     final MaterialTheme theme = MaterialTheme(TextTheme());
     return BlocProvider(
-      create: (context) => DestinationsBloc(),
+      create: (context) =>
+          DestinationsBloc(service: DestinationService())
+            ..add(GetDestinationsEvent(category: 'All')),
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: theme.light(),
         darkTheme: theme.dark(),
-        home: Scaffold(
-          body: LoginPage(),
-        ),
+        home: Scaffold(body: LoginPage()),
       ),
     );
   }

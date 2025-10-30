@@ -7,52 +7,38 @@ import 'package:easy_travel/features/home/presentation/destination_detail_page.d
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-
-  final List<String> _categories = [
+  static const List<String> _categories = [
     'All',
     'Adventure',
     'Beach',
     'City',
     'Cultural',
   ];
-  String _selectedCategory = 'All';
-
-  @override
-  void initState() {
-    super.initState();
-    context.read<DestinationsBloc>().add(GetDestinationsEvent(category: _selectedCategory));
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        SizedBox(
-          height: 48,
-          child: ListView.separated(
-            scrollDirection: Axis.horizontal,
-            itemBuilder: (context, index) => FilterChip(
-              selected: _selectedCategory == _categories[index],
-              label: Text(_categories[index]),
-              onSelected: (value) {
-                setState(() {
-                  _selectedCategory = _categories[index];
-
-                });
-                context.read<DestinationsBloc>().add(GetDestinationsEvent(category: _selectedCategory));
-              },
+        BlocBuilder<DestinationsBloc, DestinationsState>(
+          builder:(context, state) => SizedBox(
+            height: 48,
+            child: ListView.separated(
+              scrollDirection: Axis.horizontal,
+              itemBuilder: (context, index) => FilterChip(
+                selected: state.selectedCategory == _categories[index],
+                label: Text(_categories[index]),
+                onSelected: (value) {
+                  context.read<DestinationsBloc>().add(
+                    GetDestinationsEvent(category: _categories[index]),
+                  );
+                },
+              ),
+              separatorBuilder: (context, index) => SizedBox(width: 8),
+              itemCount: _categories.length,
             ),
-            separatorBuilder: (context, index) => SizedBox(width: 8),
-            itemCount: _categories.length,
           ),
         ),
         Expanded(
@@ -78,7 +64,7 @@ class _HomePageState extends State<HomePage> {
                   },
                 );
               } else if (state is DestinationsFailureState) {
-                return Center(child: Text(state.message),);
+                return Center(child: Text(state.message));
               } else {
                 return Center();
               }

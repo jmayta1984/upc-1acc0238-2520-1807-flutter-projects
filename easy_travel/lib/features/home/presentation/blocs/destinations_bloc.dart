@@ -5,17 +5,17 @@ import 'package:easy_travel/features/home/presentation/blocs/destinations_state.
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DestinationsBloc extends Bloc<DestinationsEvent, DestinationsState> {
-  DestinationsBloc() : super(DestinationsInitialState()) {
+  final DestinationService service;
+
+  DestinationsBloc({required this.service}) : super(DestinationsInitialState()) {
     on<GetDestinationsEvent>((event, emit) async {
-      emit(DestinationsLoadingState());
-
+      emit(DestinationsLoadingState(selectedCategory: event.category));
       try {
-        List<Destination> destinations = await DestinationService()
+        List<Destination> destinations = await service
             .getDestinations(event.category);
-
-        emit(DestinationsSuccessState(destinations: destinations));
+        emit(DestinationsSuccessState(destinations: destinations, selectedCategory: event.category));
       } catch (e) {
-        emit(DestinationsFailureState(message: e.toString()));
+        emit(DestinationsFailureState(message: e.toString(), selectedCategory: event.category));
       }
     });
   }
