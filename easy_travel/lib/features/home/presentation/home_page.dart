@@ -23,7 +23,7 @@ class HomePage extends StatelessWidget {
     return Column(
       children: [
         BlocBuilder<DestinationsBloc, DestinationsState>(
-          builder:(context, state) => SizedBox(
+          builder: (context, state) => SizedBox(
             height: 48,
             child: ListView.separated(
               scrollDirection: Axis.horizontal,
@@ -44,29 +44,36 @@ class HomePage extends StatelessWidget {
         Expanded(
           child: BlocBuilder<DestinationsBloc, DestinationsState>(
             builder: (context, state) {
-              if (state is DestinationsLoadingState) {
-                return Center(child: CircularProgressIndicator());
-              } else if (state is DestinationsSuccessState) {
-                return ListView.builder(
-                  itemCount: state.destinations.length,
-                  itemBuilder: (context, index) {
-                    final Destination destination = state.destinations[index];
-                    return GestureDetector(
-                      onTap: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              DestinationDetailPage(destination: destination),
+              switch (state) {
+                case DestinationsLoadingState _:
+                  return Center(child: CircularProgressIndicator());
+
+                case DestinationsFailureState _:
+                  return Center(child: Text('Error: ${state.message}'));
+
+                case DestinationsSuccessState _:
+                  return ListView.builder(
+                    itemCount: state.destinations.length,
+
+                    itemBuilder: (context, index) {
+                      final Destination destination = state.destinations[index];
+
+                      return GestureDetector(
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                DestinationDetailPage(destination: destination),
+                          ),
                         ),
-                      ),
-                      child: DestinationCard(destination: destination),
-                    );
-                  },
-                );
-              } else if (state is DestinationsFailureState) {
-                return Center(child: Text(state.message));
-              } else {
-                return Center();
+
+                        child: DestinationCard(destination: destination),
+                      );
+                    },
+                  );
+
+                default:
+                  return SizedBox.shrink();
               }
             },
           ),
