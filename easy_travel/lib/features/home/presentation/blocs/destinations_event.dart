@@ -1,8 +1,8 @@
+import 'package:easy_travel/features/home/presentation/blocs/destinations_state.dart';
+
 abstract class DestinationsEvent {}
 
-class GetDestinationsEvent extends DestinationsEvent {
-  String category;
-  GetDestinationsEvent({required this.category});
+class GetDestinationsByCategory extends DestinationsEvent {
+  CategoryType category;
+  GetDestinationsByCategory({required this.category});
 }
-
-class GetAllDestinationsEvent extends DestinationsEvent {}

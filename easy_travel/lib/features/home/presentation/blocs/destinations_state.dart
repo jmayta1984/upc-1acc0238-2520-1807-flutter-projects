@@ -1,24 +1,42 @@
 import 'package:easy_travel/features/home/domain/destination.dart';
 
-sealed class DestinationsState {
-  final String selectedCategory;
-  const DestinationsState({required this.selectedCategory});
+enum Status { initial, loading, success, failure }
+
+enum CategoryType {
+  all(label: 'All'),
+  adventure(label: 'Adventure'),
+  beach(label: 'Beach'),
+  city(label: 'City'),
+  cultural(label: 'Cultural');
+
+  final String label;
+  const CategoryType({required this.label});
 }
 
-class DestinationsInitialState extends DestinationsState {
-  const DestinationsInitialState(): super(selectedCategory: 'All');
-}
-
-class DestinationsLoadingState extends DestinationsState {
-  const DestinationsLoadingState({required super.selectedCategory});
-}
-
-class DestinationsSuccessState extends DestinationsState {
+class DestinationsState {
+  final Status status;
+  final CategoryType selectedCategory;
   final List<Destination> destinations;
-  const DestinationsSuccessState({required this.destinations, required super.selectedCategory});
-}
+  final String? message;
 
-class DestinationsFailureState extends DestinationsState {
-  final String message;
-  const DestinationsFailureState({required this.message, required super.selectedCategory});
+  const DestinationsState({
+    this.status = Status.initial,
+    this.selectedCategory = CategoryType.all,
+    this.destinations = const [],
+    this.message,
+  });
+
+  DestinationsState copyWith({
+    Status? status,
+    CategoryType? selectedCategory,
+    List<Destination>? destinations,
+    String? message,
+  }) {
+    return DestinationsState(
+      status: status ?? this.status,
+      selectedCategory: selectedCategory ?? this.selectedCategory,
+      destinations: destinations ?? this.destinations,
+      message: message ?? this.message,
+    );
+  }
 }
