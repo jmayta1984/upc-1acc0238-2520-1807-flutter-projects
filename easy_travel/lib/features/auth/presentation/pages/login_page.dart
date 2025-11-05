@@ -104,7 +104,7 @@ class LoginPage extends StatelessWidget {
             builder: (context, state) {
               if (!state) return SizedBox.shrink();
               return Container(
-                color: Colors.black26,
+                color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: 0.5),
                 child: Center(
                   child: CircularProgressIndicator(),
                 ),
