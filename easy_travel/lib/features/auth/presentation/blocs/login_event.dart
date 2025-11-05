@@ -1,7 +1,21 @@
-class LoginEvent {
-  final String email;
-  final String password;
+abstract class LoginEvent {
+  const LoginEvent();
+}
 
-  const LoginEvent({required this.email, required this.password});
-  
+class OnEmailChanged extends LoginEvent {
+  final String email;
+  const OnEmailChanged({required this.email});
+}
+
+class OnPasswordChanged extends LoginEvent {
+  final String password;
+  const OnPasswordChanged({required this.password});
+}
+
+class TogglePasswordVisibility extends LoginEvent {
+  const TogglePasswordVisibility();
+}
+
+class Login extends LoginEvent {
+  const Login();
 }

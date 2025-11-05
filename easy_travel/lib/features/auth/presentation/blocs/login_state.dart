@@ -1,16 +1,38 @@
 import 'package:easy_travel/features/auth/domain/user.dart';
+import 'package:easy_travel/features/home/presentation/blocs/destinations_state.dart';
 
-abstract class LoginState {
-  const LoginState();
-}
+class LoginState {
+  final Status status;
+  final String email;
+  final String password;
+  final bool isPasswordVisible;
+  final String? message;
+  final User? user;
 
-class LoginInitialState extends LoginState {}
+  const LoginState({
+    this.status = Status.initial,
+    this.email = '',
+    this.password = '',
+    this.isPasswordVisible = false,
+    this.message,
+    this.user,
+  });
 
-class LoginLoadingState extends LoginState {
-  
-}
-
-class LoginSuccessState extends LoginState {
-  final User user;
-  const LoginSuccessState({required this.user});
+  LoginState copyWith({
+    Status? status,
+    String? email,
+    String? password,
+    bool? isPasswordVisible,
+    String? message,
+    User? user,
+  }) {
+    return LoginState(
+      status: status ?? this.status,
+      email: email ?? this.email,
+      password: password ?? this.password,
+      isPasswordVisible: isPasswordVisible ?? this.isPasswordVisible,
+      message: message ?? this.message,
+      user: user ?? this.user,
+    );
+  }
 }
