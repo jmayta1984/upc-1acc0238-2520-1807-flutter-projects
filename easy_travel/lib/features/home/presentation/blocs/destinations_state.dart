@@ -1,17 +1,6 @@
+import 'package:easy_travel/core/enums/category_type.dart';
+import 'package:easy_travel/core/enums/status.dart';
 import 'package:easy_travel/shared/domain/destination.dart';
-
-enum Status { initial, loading, success, failure }
-
-enum CategoryType {
-  all(label: 'All'),
-  adventure(label: 'Adventure'),
-  beach(label: 'Beach'),
-  city(label: 'City'),
-  cultural(label: 'Cultural');
-
-  final String label;
-  const CategoryType({required this.label});
-}
 
 class DestinationsState {
   final Status status;

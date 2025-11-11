@@ -3,22 +3,16 @@ class Destination {
   final String title;
   final String posterPath;
   final String overview;
+  final bool isFavorite;
 
   const Destination({
     required this.id,
     required this.title,
     required this.posterPath,
     required this.overview,
+    this.isFavorite = false
   });
 
-  factory Destination.fromJson(Map<String, dynamic> json) {
-    return Destination(
-      id: json['id'],
-      title: json['title'],
-      posterPath: json['posterPath'],
-      overview: json['overview'],
-    );
-  }
 
   Map<String, dynamic> toMap() {
     return {

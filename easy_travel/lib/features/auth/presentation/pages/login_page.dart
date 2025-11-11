@@ -1,7 +1,7 @@
+import 'package:easy_travel/core/enums/status.dart';
 import 'package:easy_travel/features/auth/presentation/blocs/login_bloc.dart';
 import 'package:easy_travel/features/auth/presentation/blocs/login_event.dart';
 import 'package:easy_travel/features/auth/presentation/blocs/login_state.dart';
-import 'package:easy_travel/features/home/presentation/blocs/destinations_state.dart';
 import 'package:easy_travel/features/main/main_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

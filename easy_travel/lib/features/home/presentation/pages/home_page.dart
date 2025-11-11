@@ -1,3 +1,5 @@
+import 'package:easy_travel/core/enums/category_type.dart';
+import 'package:easy_travel/core/enums/status.dart';
 import 'package:easy_travel/shared/domain/destination.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destinations_bloc.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destinations_event.dart';

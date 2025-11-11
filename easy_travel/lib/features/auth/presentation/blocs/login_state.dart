@@ -1,5 +1,5 @@
+import 'package:easy_travel/core/enums/status.dart';
 import 'package:easy_travel/features/auth/domain/user.dart';
-import 'package:easy_travel/features/home/presentation/blocs/destinations_state.dart';
 
 class LoginState {
   final Status status;

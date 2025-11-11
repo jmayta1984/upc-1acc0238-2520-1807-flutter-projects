@@ -1,16 +1,27 @@
 import 'dart:async';
-import 'package:easy_travel/features/home/data/destination_service.dart';
+import 'package:easy_travel/core/enums/status.dart';
+import 'package:easy_travel/features/home/domain/destination_repository.dart';
 import 'package:easy_travel/shared/domain/destination.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destinations_event.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destinations_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DestinationsBloc extends Bloc<DestinationsEvent, DestinationsState> {
-  final DestinationService service;
+  final DestinationRepository repository;
 
-  DestinationsBloc({required this.service}) : super(DestinationsState()) {
+  DestinationsBloc({required this.repository}) : super(DestinationsState()) {
     on<GetDestinationsByCategory>(_getDestinationsByCategory);
+
+    on<ToggleFavorite>(_toggleFavorite,);
   }
+
+  FutureOr<void> _toggleFavorite(
+    ToggleFavorite event,
+    Emitter<DestinationsState> emit) {
+
+    
+  }
+  
 
   FutureOr<void> _getDestinationsByCategory(
     GetDestinationsByCategory event,
@@ -24,7 +35,7 @@ class DestinationsBloc extends Bloc<DestinationsEvent, DestinationsState> {
     );
 
     try {
-      List<Destination> destinations = await service.getDestinations(
+      List<Destination> destinations = await repository.getDestinations(
         category: event.category.label,
       );
       emit(state.copyWith(status: Status.success, destinations: destinations));
