@@ -28,4 +28,13 @@ class Destination {
       'overview': overview,
     };
   }
+
+  factory Destination.toDomain(Map<String, dynamic> map) {
+    return Destination(
+      id: map['id'],
+      title: map['title'],
+      posterPath: map['poster_path'],
+      overview: map['overview'],
+    );
+  }
 }

@@ -1,4 +1,4 @@
-import 'package:easy_travel/features/home/domain/destination.dart';
+import 'package:easy_travel/shared/domain/destination.dart';
 import 'package:flutter/material.dart';
 
 class DestinationCard extends StatelessWidget {
