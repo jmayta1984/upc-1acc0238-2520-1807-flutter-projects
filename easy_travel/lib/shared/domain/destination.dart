@@ -13,6 +13,21 @@ class Destination {
     this.isFavorite = false
   });
 
+  Destination copyWith({
+    int? id,
+    String? title,
+    String? posterPath,
+    String? overview,
+    bool? isFavorite,
+  }) {
+    return Destination(
+      id: id ?? this.id,
+      title: title ?? this.title,
+      posterPath: posterPath ?? this.posterPath,
+      overview: overview ?? this.overview,
+      isFavorite: isFavorite ?? this.isFavorite,
+    );
+  }
 
   Map<String, dynamic> toMap() {
     return {
