@@ -26,9 +26,17 @@ class DestinationRepositoryImpl implements DestinationRepository {
             title: dto.title,
             posterPath: dto.posterPath,
             overview: dto.overview,
-            isFavorite: ids.contains(dto.id)
+            isFavorite: ids.contains(dto.id),
           ),
         )
         .toList();
+  }
+
+  @override
+  Future<void> toggleFavorite(Destination destination) async {
+    final bool isFavorite = await dao.isFavorite(destination.id);
+    isFavorite
+        ? await dao.delete(destination.id)
+        : await dao.insert(destination);
   }
 }

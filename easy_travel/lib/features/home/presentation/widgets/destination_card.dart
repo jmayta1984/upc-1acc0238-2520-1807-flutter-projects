@@ -34,16 +34,23 @@ class DestinationCard extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: ClipOval(
-                    child: SizedBox(
-                      child: Container(
-                        color: Theme.of(context).colorScheme.surface,
+                    child: Container(
+                      color: Theme.of(context).colorScheme.surface,
+                      child: SizedBox(
+                        width: 40,
+                        height: 40,
                         child: IconButton(
+                          padding: EdgeInsets.zero,
                           onPressed: () {
                             context.read<DestinationsBloc>().add(
                               ToggleFavorite(destination: destination),
                             );
                           },
-                          icon: Icon(Icons.favorite_border),
+                          icon: Icon(
+                            destination.isFavorite
+                                ? Icons.favorite
+                                : Icons.favorite_border,
+                          ),
                         ),
                       ),
                     ),

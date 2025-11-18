@@ -12,22 +12,36 @@ class DestinationsBloc extends Bloc<DestinationsEvent, DestinationsState> {
   DestinationsBloc({required this.repository}) : super(DestinationsState()) {
     on<GetDestinationsByCategory>(_getDestinationsByCategory);
 
-    on<ToggleFavorite>(_toggleFavorite,);
+    on<ToggleFavorite>(_toggleFavorite);
   }
 
   FutureOr<void> _toggleFavorite(
     ToggleFavorite event,
-    Emitter<DestinationsState> emit) {
+    Emitter<DestinationsState> emit,
+  ) async {
+    await repository.toggleFavorite(event.destination);
 
-    
+    List<Destination> destinations = state.destinations.map((destination) {
+      return (destination.id == event.destination.id)
+          ? Destination(
+              id: destination.id,
+              title: destination.title,
+              posterPath: destination.posterPath,
+              overview: destination.overview,
+              isFavorite: !destination.isFavorite,
+            )
+          : destination;
+    }).toList();
+
+    emit(state.copyWith(destinations: destinations));
   }
-  
 
   FutureOr<void> _getDestinationsByCategory(
     GetDestinationsByCategory event,
     Emitter<DestinationsState> emit,
   ) async {
-    if (state.selectedCategory == event.category && state.destinations.isNotEmpty) {
+    if (state.selectedCategory == event.category &&
+        state.destinations.isNotEmpty) {
       return;
     }
     emit(
