@@ -8,6 +8,7 @@ import 'package:easy_travel/features/favorites/presentation/blocs/favorite_list_
 import 'package:easy_travel/features/favorites/presentation/blocs/favorite_list_event.dart';
 import 'package:easy_travel/features/home/data/destination_repository_impl.dart';
 import 'package:easy_travel/features/home/data/destination_service.dart';
+import 'package:easy_travel/features/home/presentation/blocs/destination_detail_bloc.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destinations_bloc.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destinations_event.dart';
 import 'package:flutter/material.dart';
@@ -23,20 +24,27 @@ class MainApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final MaterialTheme theme = MaterialTheme(TextTheme());
+    final repository = DestinationRepositoryImpl(
+      service: DestinationService(),
+      dao: FavoriteDao(),
+    );
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => DestinationsBloc(
-            repository: DestinationRepositoryImpl(
-              service: DestinationService(),
-              dao: FavoriteDao(),
-            ),
-          )..add(GetDestinationsByCategory(category: CategoryType.all)),
+          create: (context) =>
+              DestinationsBloc(repository: repository)
+                ..add(GetDestinationsByCategory(category: CategoryType.all)),
         ),
+
         BlocProvider(create: (context) => LoginBloc(service: AuthService())),
+        
         BlocProvider(
           create: (context) =>
               FavoriteListBloc(dao: FavoriteDao())..add(GetAllFavorites()),
+        ),
+       
+        BlocProvider(
+          create: (context) => DestinationDetailBloc(repository: repository),
         ),
       ],
       child: MaterialApp(

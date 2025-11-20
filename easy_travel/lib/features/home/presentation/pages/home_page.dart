@@ -1,5 +1,7 @@
 import 'package:easy_travel/core/enums/category_type.dart';
 import 'package:easy_travel/core/enums/status.dart';
+import 'package:easy_travel/features/home/presentation/blocs/destination_detail_bloc.dart';
+import 'package:easy_travel/features/home/presentation/blocs/destination_detail_event.dart';
 import 'package:easy_travel/shared/domain/destination.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destinations_bloc.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destinations_event.dart';
@@ -27,14 +29,14 @@ class HomePage extends StatelessWidget {
               itemBuilder: (context, index) {
                 final category = _categories[index];
                 return FilterChip(
-                selected: state == category,
-                label: Text(category.label),
-                onSelected: (value) {
-                  context.read<DestinationsBloc>().add(
-                    GetDestinationsByCategory(category: category),
-                  );
-                },
-              );
+                  selected: state == category,
+                  label: Text(category.label),
+                  onSelected: (value) {
+                    context.read<DestinationsBloc>().add(
+                      GetDestinationsByCategory(category: category),
+                    );
+                  },
+                );
               },
               separatorBuilder: (context, index) => SizedBox(width: 8),
               itemCount: _categories.length,
@@ -42,43 +44,53 @@ class HomePage extends StatelessWidget {
           ),
         ),
         Expanded(
-          child: BlocSelector<DestinationsBloc, DestinationsState, (Status, List<Destination>, String?)>(
-            selector:(state) => (state.status, state.destinations, state.message),
-            builder: (context, state) {
-              final (status, destinations, message) = state;
-              switch (status) {
-                case Status.loading:
-                  return Center(child: CircularProgressIndicator());
+          child:
+              BlocSelector<
+                DestinationsBloc,
+                DestinationsState,
+                (Status, List<Destination>, String?)
+              >(
+                selector: (state) =>
+                    (state.status, state.destinations, state.message),
+                builder: (context, state) {
+                  final (status, destinations, message) = state;
+                  switch (status) {
+                    case Status.loading:
+                      return Center(child: CircularProgressIndicator());
 
-                case Status.failure:
-                  return Center(child: Text(message ?? 'Unknown error'));
+                    case Status.failure:
+                      return Center(child: Text(message ?? 'Unknown error'));
 
-                case Status.success:
-                  return ListView.builder(
-                    itemCount: destinations.length,
+                    case Status.success:
+                      return ListView.builder(
+                        itemCount: destinations.length,
 
-                    itemBuilder: (context, index) {
-                      final Destination destination = destinations[index];
+                        itemBuilder: (context, index) {
+                          final Destination destination = destinations[index];
 
-                      return GestureDetector(
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                DestinationDetailPage(destination: destination),
-                          ),
-                        ),
+                          return GestureDetector(
+                            onTap: () {
+                              context.read<DestinationDetailBloc>().add(
+                                LoadDestinationDetail(id: destination.id),
+                              );
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => DestinationDetailPage(),
+                                ),
+                              );
+                            },
 
-                        child: DestinationCard(destination: destination),
+                            child: DestinationCard(destination: destination),
+                          );
+                        },
                       );
-                    },
-                  );
 
-                default:
-                  return SizedBox.shrink();
-              }
-            },
-          ),
+                    default:
+                      return SizedBox.shrink();
+                  }
+                },
+              ),
         ),
       ],
     );

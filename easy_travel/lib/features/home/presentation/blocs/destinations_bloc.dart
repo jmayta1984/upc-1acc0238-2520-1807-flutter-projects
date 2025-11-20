@@ -10,6 +10,7 @@ class DestinationsBloc extends Bloc<DestinationsEvent, DestinationsState> {
   final DestinationRepository repository;
 
   DestinationsBloc({required this.repository}) : super(DestinationsState()) {
+    
     on<GetDestinationsByCategory>(_getDestinationsByCategory);
 
     on<ToggleFavorite>(_toggleFavorite);
