@@ -1,3 +1,5 @@
+import 'package:easy_travel/shared/domain/destination.dart';
+
 class DestinationDto {
   final int id;
   final String title;
@@ -17,6 +19,15 @@ class DestinationDto {
       title: json['title'],
       posterPath: json['posterPath'],
       overview: json['overview'],
+    );
+  }
+
+  Destination toDomain() {
+    return Destination(
+      id: id,
+      title: title,
+      posterPath: posterPath,
+      overview: overview,
     );
   }
 }

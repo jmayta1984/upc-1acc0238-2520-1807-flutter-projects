@@ -39,4 +39,18 @@ class DestinationRepositoryImpl implements DestinationRepository {
         ? await dao.delete(destination.id)
         : await dao.insert(destination);
   }
+
+  @override
+  Future<Destination> getDestinationById({required int id}) async {
+    final DestinationDto dto = await service.getDestinationById(id);
+    List<Destination> favorites = await dao.fetchAll();
+    List<int> ids = favorites.map((favorite) => favorite.id).toList();
+    return Destination(
+      id: dto.id,
+      title: dto.title,
+      posterPath: dto.posterPath,
+      overview: dto.overview,
+      isFavorite: ids.contains(id),
+    );
+  }
 }
