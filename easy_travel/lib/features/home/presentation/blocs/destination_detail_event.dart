@@ -15,12 +15,12 @@ class ToggleFavorite extends DestinationDetailEvent {
 }
 
 class AddReview extends DestinationDetailEvent {
-  final int destinationId;
+  final int id;
   final int rating;
   final String comment;
 
   const AddReview({
-    required this.destinationId,
+    required this.id,
     required this.comment,
     required this.rating,
   });

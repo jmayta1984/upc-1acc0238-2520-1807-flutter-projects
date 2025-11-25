@@ -16,6 +16,7 @@ class DestinationDetailBloc
     : super(DestinationDetailState()) {
     on<LoadDestinationDetail>(_loadDestinationDetail);
     on<ToggleFavorite>(_toggleFavorite);
+    on<AddReview>(_addReview);
   }
 
   FutureOr<void> _loadDestinationDetail(
@@ -52,5 +53,24 @@ class DestinationDetailBloc
       isFavorite: !event.destination.isFavorite,
     );
     emit(state.copyWith(destination: destination));
+  }
+
+  FutureOr<void> _addReview(
+    AddReview event,
+    Emitter<DestinationDetailState> emit,
+  ) async {
+
+    try {
+      await service.addReview(event.id, event.comment, event.rating);
+      final reviews = await service.getReviewsByDestination(event.id);
+      emit(
+        state.copyWith(
+          status: Status.success,
+          reviews: reviews,
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(status: Status.failure, message: e.toString()));
+    }
   }
 }

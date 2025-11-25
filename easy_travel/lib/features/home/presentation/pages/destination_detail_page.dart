@@ -2,6 +2,7 @@ import 'package:easy_travel/core/enums/status.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destination_detail_bloc.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destination_detail_state.dart';
 import 'package:easy_travel/features/home/presentation/blocs/destination_detail_event.dart';
+import 'package:easy_travel/features/home/presentation/widgets/review_rating.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -13,40 +14,7 @@ class DestinationDetailPage extends StatelessWidget {
     return Scaffold(
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showDialog(
-            context: context,
-            builder: (context) {
-              return AlertDialog(
-                title: const Text('Leave a review'),
-                content: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    TextField(
-                      decoration: const InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'Your review',
-                      ),
-                      maxLines: 3,
-                    ),
-                  ],
-                ),
-                actions: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Cancel'),
-                  ),
-                  FilledButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: const Text('Submit'),
-                  ),
-                ],
-              );
-            },
-          );
+          _showReviewDialog(context: context);
         },
         child: const Icon(Icons.add_comment),
       ),
@@ -60,9 +28,10 @@ class DestinationDetailPage extends StatelessWidget {
             case Status.success:
               final destination = state.destination!;
               return Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Stack(
-                    alignment: AlignmentGeometry.bottomRight,
+                    alignment: Alignment.bottomRight,
                     children: [
                       Hero(
                         tag: destination.id,
@@ -88,40 +57,52 @@ class DestinationDetailPage extends StatelessWidget {
                       ),
                     ],
                   ),
+                  Text(
+                    destination.title,
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    
+                  ),
                   Expanded(
-                    child: ListView.builder(
-                      itemCount: state.reviews.length,
-                      itemBuilder: (context, index) {
-                        final review = state.reviews[index];
-                        return Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: List.generate(
-                                  5,
-                                  (index) => Icon(
-                                    index < review.rating
-                                        ? Icons.star
-                                        : Icons.star_border,
-                                    color: index < review.rating
-                                        ? Theme.of(context).colorScheme.primary
-                                        : Theme.of(
-                                            context,
-                                          ).colorScheme.onSurfaceVariant,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: ListView.builder(
+                        padding: EdgeInsets.zero,
+                        itemCount: state.reviews.length,
+                        itemBuilder: (context, index) {
+                          final review = state.reviews[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: List.generate(
+                                    5,
+                                    (index) => Icon(
+                                      index < review.rating
+                                          ? Icons.star
+                                          : Icons.star_border,
+                                      color: index < review.rating
+                                          ? Theme.of(context).colorScheme.primary
+                                          : Theme.of(
+                                              context,
+                                            ).colorScheme.onSurfaceVariant,
+                                    ),
                                   ),
                                 ),
-                              ),
-                              Text(review.comment),
-                              Text(
-                                review.userName,
-                                style: TextStyle(fontStyle: FontStyle.italic),
-                              ),
-                            ],
-                          ),
-                        );
-                      },
+                                Text(review.comment),
+                                Text(
+                                  review.userName,
+                                  style: TextStyle(fontStyle: FontStyle.italic),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ],
@@ -131,6 +112,58 @@ class DestinationDetailPage extends StatelessWidget {
           }
         },
       ),
+    );
+  }
+
+  void _showReviewDialog({required BuildContext context}) {
+    int rating = 0;
+    String comment = '';
+
+    showDialog(
+      context: context,
+      builder: (_) {
+        return BlocBuilder<DestinationDetailBloc, DestinationDetailState>(
+          builder: (context, state) => AlertDialog(
+            title: const Text('Leave a review'),
+            content: SingleChildScrollView(
+              child: Column(
+                children: [
+                  TextField(
+                    onChanged: (value) => comment = value,
+                    decoration: const InputDecoration(
+                      border: OutlineInputBorder(),
+                      hintText: 'Your review',
+                    ),
+                    maxLines: 3,
+                  ),
+                  ReviewRating(onRatingSelected: (value) => rating = value),
+                ],
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+              FilledButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  context.read<DestinationDetailBloc>().add(
+                    AddReview(
+                      id: state.destination!.id,
+                      comment: comment,
+                      rating: rating,
+                    ),
+                  );
+                },
+                child: const Text('Submit'),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
