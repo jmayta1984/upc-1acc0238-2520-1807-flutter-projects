@@ -1,8 +1,11 @@
 import 'package:easy_travel/core/enums/category_type.dart';
 import 'package:easy_travel/core/ui/theme.dart';
 import 'package:easy_travel/features/auth/data/auth_service.dart';
+import 'package:easy_travel/features/auth/presentation/blocs/auth_bloc.dart';
+import 'package:easy_travel/features/auth/presentation/blocs/auth_event.dart';
 import 'package:easy_travel/features/auth/presentation/blocs/login_bloc.dart';
 import 'package:easy_travel/features/auth/presentation/pages/login_page.dart';
+import 'package:easy_travel/features/auth/presentation/pages/splash_page.dart';
 import 'package:easy_travel/features/favorites/data/favorite_dao.dart';
 import 'package:easy_travel/features/favorites/presentation/blocs/favorite_list_bloc.dart';
 import 'package:easy_travel/features/favorites/presentation/blocs/favorite_list_event.dart';
@@ -37,21 +40,23 @@ class MainApp extends StatelessWidget {
         ),
 
         BlocProvider(create: (context) => LoginBloc(service: AuthService())),
-        
+
         BlocProvider(
           create: (context) =>
               FavoriteListBloc(dao: FavoriteDao())..add(GetAllFavorites()),
         ),
-       
+
         BlocProvider(
           create: (context) => DestinationDetailBloc(repository: repository),
         ),
+
+        BlocProvider(create: (context) => AuthBloc()..add(const AppStarted())),
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: theme.light(),
         darkTheme: theme.dark(),
-        home: Scaffold(body: LoginPage()),
+        home: SplashPage(),
       ),
     );
   }
