@@ -11,6 +11,14 @@ dependencies:
     sdk: flutter
   http: ^1.6.0
   flutter_bloc: ^9.1.1
+  sqflite: ^2.4.2
+  path: ^1.9.1
+  flutter_launcher_icons: ^0.14.4
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/icons/icon.png"
 
 dev_dependencies:
   flutter_test:

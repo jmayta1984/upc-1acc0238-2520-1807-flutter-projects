@@ -32,6 +32,7 @@ class CocktailDto {
       category: category,
       posterPath: posterPath,
       instructions: instructions,
+      isFavorite: false,
     );
   }
 }

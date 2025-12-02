@@ -1,3 +1,4 @@
+import 'package:easy_cocktail/data/local/cocktail_dao.dart';
 import 'package:easy_cocktail/data/remote/cocktail_service.dart';
 import 'package:easy_cocktail/data/repositories/cocktail_repository_impl.dart';
 import 'package:easy_cocktail/presentation/blocs/cocktails_bloc.dart';
@@ -14,10 +15,14 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final repository = CocktailRepositoryImpl(service: CocktailService());
+    final repository = CocktailRepositoryImpl(
+      service: CocktailService(),
+      dao: CocktailDao(),
+    );
     return BlocProvider(
       create: (context) => CocktailsBloc(repository: repository),
       child: const MaterialApp(
+        debugShowCheckedModeBanner: false,
         home: CocktailsPage(),
       ),
     );

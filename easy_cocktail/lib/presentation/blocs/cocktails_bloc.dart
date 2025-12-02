@@ -13,6 +13,8 @@ class CocktailsBloc extends Bloc<CocktailsEvent, CocktailsState> {
     on<GetAllCocktails>(_getAllCocktails);
 
     on<QueryChanged>(_queryChanged);
+
+    on<ToggleFavoriteCocktail>(_toggleFavoriteCocktail);
   }
 
   FutureOr<void> _getAllCocktails(
@@ -35,5 +37,19 @@ class CocktailsBloc extends Bloc<CocktailsEvent, CocktailsState> {
     Emitter<CocktailsState> emit,
   ) {
     emit(state.copyWith(query: event.query));
+  }
+
+  FutureOr<void> _toggleFavoriteCocktail(
+    ToggleFavoriteCocktail event,
+    Emitter<CocktailsState> emit,
+  ) async {
+    await repository.toggleFavoriteCocktail(event.cocktail);
+    final List<Cocktail> updatedCocktails = state.cocktails.map((cocktail) {
+      if (cocktail.id == event.cocktail.id) {
+        return cocktail.copyWith(isFavorite: !cocktail.isFavorite);
+      }
+      return cocktail;
+    }).toList();
+    emit(state.copyWith(cocktails: updatedCocktails));
   }
 }
